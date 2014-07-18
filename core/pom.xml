@@ -12,12 +12,16 @@
 	<name>Crawljax core</name>
 
 	<inceptionYear>2007</inceptionYear>
+	
+	 <properties>
+    	<skipTests>true</skipTests>
+  	</properties>
 
 	<profiles>
 		<profile>
 			<id>default</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<tests.exclude>com.crawljax.test.BrowserTest.class</tests.exclude>
@@ -196,6 +200,7 @@
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 			</plugin>
+		
 		</plugins>
 	</build>
 </project>

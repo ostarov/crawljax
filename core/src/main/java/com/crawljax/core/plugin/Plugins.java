@@ -48,7 +48,8 @@ public class Plugins {
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-	                PreCrawlingPlugin.class);
+	                PreCrawlingPlugin.class,
+	                OnPopupWindowPlugin.class);
 
 	private final ImmutableListMultimap<Class<? extends Plugin>, Plugin> plugins;
 
@@ -174,6 +175,22 @@ public class Plugins {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnNewStatePlugin) plugin).onNewState(context, newState);
+				} catch (RuntimeException e) {
+					reportFailingPlugin(plugin, e);
+				}
+			}
+		}
+	}
+	
+	// ATTENTION!!!
+	public void runOnPopupWindowPlugins(CrawlerContext context) {
+		LOGGER.debug("Running OnPopupWindowPlugins...");
+		counters.get(OnPopupWindowPlugin.class).inc();
+		for (Plugin plugin : plugins.get(OnPopupWindowPlugin.class)) {
+			if (plugin instanceof OnPopupWindowPlugin) {
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((OnPopupWindowPlugin) plugin).onPopupWindow(context);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}

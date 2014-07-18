@@ -243,7 +243,13 @@ public class Crawler {
 		if (isFired) {
 			// Let the controller execute its specified wait operation on the browser thread safe.
 			waitConditionChecker.wait(browser);
-			browser.closeOtherWindows();
+			
+			// ATTENTION!!!
+			if (browser.getBrowser().getWindowHandles().size() > 1) {
+				plugins.runOnPopupWindowPlugins(context);
+			}
+			
+			browser.closeOtherWindows();	
 			return true;
 		} else {
 			/*
@@ -384,7 +390,9 @@ public class Crawler {
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
 		
 		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
-		candidateActionCache.addActions(extract, currentState);
+		
+		// ATTENTION: extract -> currentState.getCandidateElements()
+		candidateActionCache.addActions(currentState.getCandidateElements(), currentState);
 	}
 
 	private void waitForRefreshTagIfAny(final Eventable eventable) {
@@ -404,7 +412,8 @@ public class Crawler {
 	}
 
 	private boolean crawlerLeftDomain() {
-		return !UrlUtils.isSameDomain(browser.getCurrentUrl(), url);
+		return false;
+		//return !UrlUtils.isSameDomain(browser.getCurrentUrl(), url);
 	}
 
 	private long parseWaitTimeOrReturnDefault(Matcher m) {
@@ -449,7 +458,8 @@ public class Crawler {
 
 		plugins.runPreStateCrawlingPlugins(context, extract, index);
 
-		candidateActionCache.addActions(extract, index);
+		// ATTENTION: extract -> index.getCandidateElements()
+		candidateActionCache.addActions(index.getCandidateElements(), index);
 
 		return index;
 

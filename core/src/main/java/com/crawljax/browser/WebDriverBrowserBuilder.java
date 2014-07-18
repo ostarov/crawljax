@@ -9,6 +9,8 @@ import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
+
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -141,8 +143,11 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	        long crawlWaitReload, long crawlWaitEvent) {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
-		caps.setCapability("takesScreenshot", true);
-		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN"});
+		// ATTENTION!!!
+		caps.setJavascriptEnabled(true);
+	    caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {"--ignore-ssl-errors=true"});
+	    //caps.setCapability("takesScreenshot", true);
+		//caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN"});
 		final ProxyConfiguration proxyConf = configuration
 				.getProxyConfiguration();
 		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {
@@ -154,6 +159,8 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		}
 		
 		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
+		// ATTENTION!!!
+		phantomJsDriver.manage().window().setSize(new Dimension(2000,10000));
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
 		        crawlWaitEvent, crawlWaitReload);

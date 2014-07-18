@@ -163,4 +163,6 @@ public interface EmbeddedBrowser {
 	 */
 	byte[] getScreenShot() throws CrawljaxException;
 
+	// ATTENTION!!!
+	public WebDriver getBrowser();
 }

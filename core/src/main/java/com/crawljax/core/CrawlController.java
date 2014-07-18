@@ -128,7 +128,7 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private void shutDown() {
 		LOG.info("Received shutdown notice. Reason is {}", exitReason);
-		executor.shutdownNow();
+		executor.shutdown();
 		try {
 			LOG.debug("Waiting for task consumers to stop...");
 			executor.awaitTermination(15, TimeUnit.SECONDS);
@@ -136,6 +136,8 @@ public class CrawlController implements Callable<CrawlSession> {
 			LOG.warn("Interrupted before being able to shut down executor pool", e);
 			exitReason = ExitStatus.ERROR;
 		}
+		// ATTENTION!!!
+		executor.shutdownNow();
 		LOG.debug("terminated");
 	}
 
